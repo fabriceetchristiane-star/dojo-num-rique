@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Informations – Dojo Numérique</title>
+  <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+  <header>
+    <h1>📢 Informations du Dojo</h1>
+    <p>Agenda, stages, résultats de compétitions et actualités</p>
+    <button id="btnEdition" class="lien-bleu" style="width: auto; margin: 10px auto; display: none;">
+      ✏️ Mode Édition
+    </button>
+  </header>
+
+  <section>
+    <!-- Section Agenda (fixe) -->
+    <div class="section-title">📅 Agenda Visuel JAK Lambersart 2025–2026</div>
+    
+    <div class="video-block">
+      <h3>🥋 Septembre 2025</h3>
+      <ul style="padding-left: 20px;">
+        <li><strong>Jujitsu Fighting</strong> : Jeudi 18 septembre (19h30–21h00)</li>
+      </ul>
+    </div>
+
+    <!-- Sections modifiables -->
+    <div class="section-title">🏆 Résultats Compétitions</div>
+    <div class="video-block section-editable" data-section="resultats">
+      <div class="contenu-view">
+        <p><strong>Derniers résultats à venir...</strong></p>
+        <p>Les professeurs mettront à jour les résultats des compétitions ici.</p>
+      </div>
+      <div class="contenu-edit" style="display: none;">
+        <textarea style="width: 100%; height: 150px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" 
+                  placeholder="Entrez les résultats des compétitions..."></textarea>
+        <button class="btn-sauvegarder lien-bleu" style="width: auto; margin-top: 10px;">
+          💾 Sauvegarder
+        </button>
+      </div>
+    </div>
+
+    <div class="section-title">📰 Dernières Actualités</div>
+    <div class="video-block section-editable" data-section="actualites">
+      <div class="contenu-view">
+        <p><strong>Bienvenue au Dojo Numérique !</strong></p>
+        <p>• Nouveau site en ligne pour suivre votre progression</p>
+        <p>• Retrouvez toutes les vidéos techniques par grade</p>
+        <p>• Quiz interactif pour tester vos connaissances</p>
+      </div>
+      <div class="contenu-edit" style="display: none;">
+        <textarea style="width: 100%; height: 200px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" 
+                  placeholder="Entrez les actualités du dojo..."></textarea>
+        <button class="btn-sauvegarder lien-bleu" style="width: auto; margin-top: 10px;">
+          💾 Sauvegarder
+        </button>
+      </div>
+    </div>
+
+    <div class="section-title">📞 Contact & Informations Pratiques</div>
+    <div class="video-block section-editable" data-section="contact">
+      <div class="contenu-view">
+        <p><strong>📍 Lieu</strong> : Dojo JAK Lambersart</p>
+        <p><strong>👨‍🏫 Professeurs</strong> : Équipe pédagogique du club</p>
+        <p><strong>📧 Contact</strong> : jak-lambersart@example.com</p>
+        <p><strong>📞 Téléphone</strong> : 03.XX.XX.XX.XX</p>
+        <p><strong>🕒 Horaires</strong> : Voir planning ci-dessus</p>
+      </div>
+      <div class="contenu-edit" style="display: none;">
+        <textarea style="width: 100%; height: 180px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" 
+                  placeholder="Entrez les informations de contact..."></textarea>
+        <button class="btn-sauvegarder lien-bleu" style="width: auto; margin-top: 10px;">
+          💾 Sauvegarder
+        </button>
+      </div>
+    </div>
+
+    <!-- Section d'administration -->
+    <div id="admin-login" class="video-block" style="background: #f8f9fa; text-align: center;">
+      <h3>🔐 Accès Professeur</h3>
+      <div id="login-form">
+        <input type="password" id="admin-password" placeholder="Mot de passe professeur" 
+               style="padding: 10px; margin: 10px; width: 200px; border: 1px solid #ddd; border-radius: 5px;">
+        <button onclick="verifierPassword()" class="lien-bleu" style="width: auto;">
+          🔓 Se connecter
+        </button>
+      </div>
+      <div id="admin-actions" style="display: none;">
+        <p>✅ Mode administration activé</p>
+        <button onclick="deconnexionAdmin()" class="lien-bleu" style="width: auto; background: #dc3545;">
+          🚪 Se déconnecter
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <nav style="text-align: center; margin-top: 30px;">
+    <a class="lien-bleu" href="index.html">🏠 Retour à l'accueil</a>
+  </nav>
+
+  <footer>
+    <p>Version locale – Dojo Numérique Lambersart – Dernière mise à jour : <span id="date-maj"></span></p>
+  </footer>
+
+  <script>
+    const MOT_DE_PASSE_ADMIN = "jak2025";
+    let modeEdition = false;
+
+    // Date de mise à jour
+    document.getElementById('date-maj').textContent = new Date().toLocaleDateString('fr-FR');
+
+    // Vérification du mot de passe
+    function verifierPassword() {
+      const password = document.getElementById('admin-password').value;
+      if (password === MOT_DE_PASSE_ADMIN) {
+        modeEdition = true;
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('admin-actions').style.display = 'block';
+        document.getElementById('btnEdition').style.display = 'block';
+        chargerContenus();
+      } else {
+        alert('Mot de passe incorrect');
+      }
+    }
+
+    function deconnexionAdmin() {
+      modeEdition = false;
+      document.getElementById('login-form').style.display = 'block';
+      document.getElementById('admin-actions').style.display = 'none';
+      document.getElementById('btnEdition').style.display = 'none';
+      desactiverEdition();
+    }
+
+    // Charger les contenus sauvegardés
+    function chargerContenus() {
+      ['resultats', 'actualites', 'contact'].forEach(section => {
+        const contenu = localStorage.getItem(`info-${section}`);
+        if (contenu) {
+          const element = document.querySelector(`[data-section="${section}"] .contenu-view`);
+          if (element) element.innerHTML = contenu;
+        }
+      });
+    }
+
+    // Activation du mode édition
+    document.getElementById('btnEdition').addEventListener('click', function() {
+      if (!modeEdition) return;
+      
+      const sections = document.querySelectorAll('.section-editable');
+      const estEnEdition = this.textContent.includes('Édition');
+      
+      if (estEnEdition) {
+        desactiverEdition();
+        this.textContent = '✏️ Mode Édition';
+      } else {
+        activerEdition();
+        this.textContent = '💾 Quitter Édition';
+      }
+    });
+
+    function activerEdition() {
+      document.querySelectorAll('.section-editable').forEach(section => {
+        const view = section.querySelector('.contenu-view');
+        const edit = section.querySelector('.contenu-edit');
+        const textarea = section.querySelector('textarea');
+        
+        if (view && edit && textarea) {
+          // Sauvegarder le contenu actuel dans le textarea
+          textarea.value = view.innerHTML;
+          view.style.display = 'none';
+          edit.style.display = 'block';
+        }
+      });
+    }
+
+    function desactiverEdition() {
+      document.querySelectorAll('.section-editable').forEach(section => {
+        const view = section.querySelector('.contenu-view');
+        const edit = section.querySelector('.contenu-edit');
+        
+        if (view && edit) {
+          edit.style.display = 'none';
+          view.style.display = 'block';
+        }
+      });
+    }
+
+    // Sauvegarde des contenus
+    document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('btn-sauvegarder')) {
+        const section = e.target.closest('.section-editable');
+        const sectionId = section.dataset.section;
+        const textarea = section.querySelector('textarea');
+        const view = section.querySelector('.contenu-view');
+        
+        if (textarea && view) {
+          // Sauvegarder dans le localStorage
+          localStorage.setItem(`info-${sectionId}`, textarea.value);
+          // Mettre à jour l'affichage
+          view.innerHTML = textarea.value;
+          
+          // Mettre à jour la date
+          document.getElementById('date-maj').textContent = new Date().toLocaleDateString('fr-FR');
+          
+          // Retour en mode visualisation
+          desactiverEdition();
+          document.getElementById('btnEdition').textContent = '✏️ Mode Édition';
+          
+          alert('✅ Contenu sauvegardé !');
+        }
+      }
+    });
+
+    // Charger au démarrage
+    document.addEventListener('DOMContentLoaded', function() {
+      chargerContenus();
+    });
+  </script>
+</body>
+</html>

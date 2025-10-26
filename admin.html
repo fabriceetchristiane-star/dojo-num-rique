@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin – Gestion des vidéos</title>
+  <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+  <header>
+    <h1>🔐 Accès Professeur – Gestion des Vidéos</h1>
+    <p>Ajoutez des vidéos pour chaque grade et catégorie</p>
+  </header>
+
+  <section>
+    <form id="formulaire">
+      <div class="form-group">
+        <label for="url">📹 Lien YouTube :</label>
+        <input type="url" id="url" required placeholder="https://youtu.be/..." style="width: 100%; max-width: 500px;">
+      </div>
+
+      <div class="form-group">
+        <label for="texte">📝 Description de la technique :</label>
+        <input type="text" id="texte" required placeholder="Ex: Morote Seoi Nage" style="width: 100%; max-width: 500px;">
+      </div>
+
+      <div class="form-group">
+        <label for="categorie">🗂️ Catégorie :</label>
+        <select id="categorie" required style="width: 100%; max-width: 500px;">
+          <option value="">-- Choisir une catégorie --</option>
+          <option value="Te Waza">Techniques de main (Te Waza)</option>
+          <option value="Koshi Waza">Techniques de hanche (Koshi Waza)</option>
+          <!-- SUPPRIMÉ : Ashi Waza -->
+          <option value="Ma Sutemi Waza">Techniques de sacrifice (Ma Sutemi Waza)</option>
+          <option value="Yoko Sutemi Waza">Techniques de sacrifice (Yoko Sutemi Waza)</option>
+          <option value="Osaekomi Waza">Immobilisations (Osaekomi Waza)</option>
+          <option value="Shime Waza">Étranglements (Shime Waza)</option>
+          <option value="Kansetsu Waza">Clés de bras (Kansetsu Waza)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="grade">🎯 Grade :</label>
+        <select id="grade" required style="width: 100%; max-width: 500px;">
+          <option value="">-- Choisir un grade --</option>
+          <option value="blanche-jaune">Blanche / Jaune</option>
+          <option value="jaune-orange">Jaune / Orange</option>
+          <option value="orange-verte">Orange / Verte</option>
+          <option value="verte-bleue">Verte / Bleue</option>
+          <option value="bleue-marron">Bleue / Marron</option>
+          <option value="marron-noir">Marron / Noir</option>
+          <option value="noir">Ceinture Noire</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="section">📂 Section :</label>
+        <select id="section" required style="width: 100%; max-width: 500px;">
+          <option value="techniques-de-base">🥋 Techniques de Base</option>
+          <option value="variantes-avancees">⚡ Variantes Avancées</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-connexion" style="width: auto; padding: 15px 30px;">
+        ➕ Ajouter la vidéo
+      </button>
+    </form>
+
+    <div id="message" class="error-message" style="display: none; background: #d4edda; color: #155724; border-color: #c3e6cb;"></div>
+
+    <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+      <h3>📊 Vidéos actuellement enregistrées :</h3>
+      <div id="video-count" style="margin: 15px 0; font-size: 1.2em; font-weight: bold;">Chargement...</div>
+      <button onclick="viderStockage()" class="lien-bleu" style="background: #dc3545; border-color: #dc3545;">
+        🗑️ Vider toutes les vidéos
+      </button>
+    </div>
+  </section>
+
+  <nav style="text-align: center; margin-top: 30px;">
+    <a class="lien-bleu" href="index.html">⬅️ Retour à l'accueil</a>
+    <a class="lien-bleu" href="videos-par-grade.html">📚 Voir les vidéos par grade</a>
+  </nav>
+
+  <script>
+    // Afficher le nombre de vidéos
+    function mettreAJourCompteur() {
+      const videos = JSON.parse(localStorage.getItem("videos") || "[]");
+      document.getElementById("video-count").textContent = 
+        `${videos.length} vidéo(s) enregistrée(s)`;
+    }
+
+    // Vider le stockage
+    function viderStockage() {
+      if (confirm("Êtes-vous sûr de vouloir supprimer toutes les vidéos ?")) {
+        localStorage.removeItem("videos");
+        mettreAJourCompteur();
+        const message = document.getElementById("message");
+        message.textContent = "✅ Toutes les vidéos ont été supprimées.";
+        message.style.display = "block";
+        setTimeout(() => message.style.display = "none", 3000);
+      }
+    }
+
+    // Gestion du formulaire
+    document.getElementById("formulaire").addEventListener("submit", function(e) {
+      e.preventDefault();
+      
+      const url = document.getElementById("url").value;
+      const texte = document.getElementById("texte").value;
+      const categorie = document.getElementById("categorie").value;
+      const grade = document.getElementById("grade").value;
+      const section = document.getElementById("section").value;
+
+      const nouvelleVideo = { 
+        url, 
+        texte, 
+        categorie, 
+        grade, 
+        section,
+        date: new Date().toLocaleDateString('fr-FR')
+      };
+
+      const sauvegarde = localStorage.getItem("videos");
+      const videos = sauvegarde ? JSON.parse(sauvegarde) : [];
+      videos.push(nouvelleVideo);
+      localStorage.setItem("videos", JSON.stringify(videos));
+
+      // Message de succès
+      const message = document.getElementById("message");
+      message.textContent = "✅ Vidéo ajoutée avec succès !";
+      message.style.display = "block";
+
+      // Reset du formulaire
+      this.reset();
+      mettreAJourCompteur();
+
+      // Cacher le message après 3 secondes
+      setTimeout(() => {
+        message.style.display = "none";
+      }, 3000);
+    });
+
+    // Initialisation au chargement
+    document.addEventListener("DOMContentLoaded", function() {
+      mettreAJourCompteur();
+    });
+  </script>
+</body>
+</html>

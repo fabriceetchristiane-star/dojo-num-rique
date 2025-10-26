@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Dojo Numérique - Club Judo Lambersart</title>
+  <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+  <header>
+    <h1>🥋 Bienvenue au Dojo Numérique du Club Judo Lambersart</h1>
+    <p>Apprends, révise et progresse à ton rythme</p>
+  </header>
+
+  <!-- Section Accès Rapide -->
+  <section class="acces-rapide">
+    <h2>🚀 Accès Rapide</h2>
+    <div class="grid-accueil">
+      
+      <!-- Informations -->
+      <a class="card-accueil info-card" href="informations.html">
+        <div class="card-icon">📢</div>
+        <div class="card-content">
+          <h3>Informations</h3>
+          <p>Stages, résultats, actualités</p>
+        </div>
+      </a>
+
+      <!-- Quiz -->
+      <a class="card-accueil quiz-card" href="quiz.html">
+        <div class="card-icon">🎯</div>
+        <div class="card-content">
+          <h3>Quiz Pédagogique</h3>
+          <p>Teste tes connaissances</p>
+        </div>
+      </a>
+
+      <!-- Vidéos par Grade -->
+      <a class="card-accueil video-card" href="videos-par-grade.html">
+        <div class="card-icon">📽️</div>
+        <div class="card-content">
+          <h3>Vidéos par Grade</h3>
+          <p>Techniques par ceinture</p>
+        </div>
+      </a>
+
+      <!-- Accès Professeurs -->
+      <div class="card-accueil prof-card" onclick="ouvrirModalProf()">
+        <div class="card-icon">👨‍🏫</div>
+        <div class="card-content">
+          <h3>Accès Professeurs</h3>
+          <p>Espace réservé</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Modal pour la connexion professeurs -->
+  <div id="modalProf" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="fermerModalProf()">&times;</span>
+      <h2>🔐 Accès Professeurs</h2>
+      <p style="color: #666; margin-bottom: 20px; text-align: center;">
+        Espace réservé aux enseignants
+      </p>
+      
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="password">Mot de passe :</label>
+          <input type="password" id="password" name="password" required 
+                 placeholder="Entrez le mot de passe" autocomplete="current-password">
+        </div>
+        
+        <div id="errorMessage" class="error-message">
+          ❌ Mot de passe incorrect
+        </div>
+        
+        <button type="submit" class="btn-connexion">
+          🔐 Se connecter
+        </button>
+      </form>
+      
+      <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+        <small style="color: #6c757d;">
+          💡 <strong>Mot de passe actuel :</strong> "sensei2024"<br>
+          (À modifier dans l'administration)
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Version locale – Respect de la vie privée – Mise à jour selon les cours du dojo</p>
+  </footer>
+
+  <script>
+    // Système de mot de passe sécurisé
+    const MOT_DE_PASSE_CORRECT = "sensei2024"; // À changer par les professeurs
+    
+    // Modal pour les professeurs
+    function ouvrirModalProf() {
+        document.getElementById('modalProf').style.display = 'block';
+        document.getElementById('password').focus();
+    }
+
+    function fermerModalProf() {
+        document.getElementById('modalProf').style.display = 'none';
+        document.getElementById('password').value = '';
+        document.getElementById('errorMessage').style.display = 'none';
+    }
+
+    // Connexion professeurs
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const password = document.getElementById('password').value;
+        const errorMessage = document.getElementById('errorMessage');
+        
+        if (password === MOT_DE_PASSE_CORRECT) {
+            // Redirection vers l'administration
+            window.location.href = 'admin.html';
+        } else {
+            // Message d'erreur
+            errorMessage.style.display = 'block';
+            document.getElementById('password').value = '';
+            document.getElementById('password').focus();
+            
+            // Animation d'erreur
+            document.getElementById('password').style.borderColor = '#dc3545';
+            setTimeout(() => {
+                document.getElementById('password').style.borderColor = '#ddd';
+            }, 1000);
+        }
+    });
+
+    // Fermer la modal en cliquant à l'extérieur
+    window.onclick = function(event) {
+        const modal = document.getElementById('modalProf');
+        if (event.target === modal) {
+            fermerModalProf();
+        }
+    }
+
+    // Touche Echap pour fermer
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            fermerModalProf();
+        }
+    });
+  </script>
+</body>
+</html>
